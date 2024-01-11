@@ -16,7 +16,10 @@
         <Button Content="Body" HorizontalAlignment="Left" Height="37" Margin="467,75,0,0" VerticalAlignment="Top" Width="89"/>
         <Button Content="Body and color" HorizontalAlignment="Left" Height="37" Margin="584,75,0,0" VerticalAlignment="Top" Width="89"/>
         <Ellipse Stroke="Black" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,120,0" Width="40" Height="40" Fill="LightGreen"/>
+        <Viewbox>
+            <Image />
+        </Viewbox>
         <TextBox TextWrapping="Wrap" Text="Running" Width="120" Margin="365,30,315,386" TextChanged="TextBox_TextChanged"/>
-        <Image Margin="136,141,155,30" />
+        
     </Grid>
 </Window>
