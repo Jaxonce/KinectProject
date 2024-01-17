@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Windows.Media.Imaging;
+using System.Windows.Media;
 
 namespace KicectClasse
 {
@@ -24,11 +26,30 @@ namespace KicectClasse
 
         public InfraredFrameReader IrFrameReader { get; set; }
 
+        private WriteableBitmap bitmap = null;
+
+        private byte[] colorPixels = null;
+
+        private readonly uint bytesPerPixel;
+
+
 
         public KinectManager()
         {
             KinectSensor = KinectSensor.GetDefault();
             KinectSensor.IsAvailableChanged += KinectSensor_IsAvailableChanged;
+
+            List<Color> colors = new List<Color>();
+
+            for (var i = 0; i < 256; i++)
+                colors.Add(Color.FromRgb(i, i, i));
+
+            FrameDescription colorFrameDescription = this.KinectSensor.ColorFrameSource.CreateFrameDescription(ColorImageFormat.Rgba);
+            this.bytesPerPixel = colorFrameDescription.BytesPerPixel;
+            this.colorPixels = new byte[colorFrameDescription.Width * colorFrameDescription.Height * this.bytesPerPixel];
+            this.bitmap = new WriteableBitmap(colorFrameDescription.Width, colorFrameDescription.Height,100, 100, colorFrameDescription.BytesPerPixel, new BitmapPalette());
+
+
 
             ColorFrameReader = KinectSensor.ColorFrameSource.OpenReader();
             DepthFrameReader = KinectSensor.DepthFrameSource.OpenReader();
