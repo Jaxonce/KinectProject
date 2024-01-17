@@ -40,14 +40,14 @@ namespace KicectClasse
             KinectSensor.IsAvailableChanged += KinectSensor_IsAvailableChanged;
 
             List<Color> colors = new List<Color>();
-
             for (var i = 0; i < 256; i++)
-                colors.Add(Color.FromRgb(i, i, i));
+                colors.Add(Color.FromRgb((byte)i, (byte)i, (byte)i));
+            BitmapPalette bitmapPalette = new(colors);
 
             FrameDescription colorFrameDescription = this.KinectSensor.ColorFrameSource.CreateFrameDescription(ColorImageFormat.Rgba);
             this.bytesPerPixel = colorFrameDescription.BytesPerPixel;
             this.colorPixels = new byte[colorFrameDescription.Width * colorFrameDescription.Height * this.bytesPerPixel];
-            this.bitmap = new WriteableBitmap(colorFrameDescription.Width, colorFrameDescription.Height,100, 100, colorFrameDescription.BytesPerPixel, new BitmapPalette());
+            this.bitmap = new WriteableBitmap(colorFrameDescription.Width, colorFrameDescription.Height,100, 100, PixelFormats.Indexed8, bitmapPalette);
 
 
 
