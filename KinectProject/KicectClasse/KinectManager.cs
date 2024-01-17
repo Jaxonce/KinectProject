@@ -9,32 +9,58 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace KicectClasse
 {
-    internal partial class KinectManager: ObservableObject
+    public partial class KinectManager: ObservableObject
     {
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(StatusText))]  
         private bool status;
-        public String StatusText => status ? "Running" : "Kinect Sensor not available";
+        public String StatusText => Status ? "Running" : "Kinect Sensor not available";
 
-        public KinectSensor kinectSensor { get; set; }
+        public KinectSensor KinectSensor { get; set; }
+
+        public ColorFrameReader ColorFrameReader { get; set; }
+
+        public DepthFrameReader DepthFrameReader { get; set; }
+
+        public InfraredFrameReader IrFrameReader { get; set; }
+
 
         public KinectManager()
         {
-            kinectSensor = KinectSensor.GetDefault();
-            kinectSensor.IsAvailableChanged += KinectSensor_IsAvailableChanged;
+            KinectSensor = KinectSensor.GetDefault();
+            KinectSensor.IsAvailableChanged += KinectSensor_IsAvailableChanged;
+
+            ColorFrameReader = KinectSensor.ColorFrameSource.OpenReader();
+            DepthFrameReader = KinectSensor.DepthFrameSource.OpenReader();
+            IrFrameReader = KinectSensor.InfraredFrameSource.OpenReader();
         }
 
         public void StartSensor()
         {
-            kinectSensor?.Open();
+            KinectSensor?.Open();
         }
 
         public void StopSensor() {
-            kinectSensor?.Close();
+            KinectSensor?.Close();
         }
 
         private void KinectSensor_IsAvailableChanged(Object sender, EventArgs args) {
-            status = kinectSensor.IsAvailable;
+            Status = KinectSensor.IsAvailable;
+        }
+
+        public ColorFrame GetColorFrame()
+        {
+            return ColorFrameReader.AcquireLatestFrame();
+        }
+
+        public DepthFrame GetDepthFrame()
+        {
+            return DepthFrameReader.AcquireLatestFrame();
+        }
+
+        public InfraredFrame GetIRFrame()
+        {
+            return IrFrameReader.AcquireLatestFrame();
         }
 
     }

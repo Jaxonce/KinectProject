@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KinectProject", "KinectProject\KinectProject.csproj", "{ACBE2850-4350-451D-8ED9-2C97F913D0D6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{069E5D4E-E5DD-4163-B4D3-5CC14C88DDA0} = {069E5D4E-E5DD-4163-B4D3-5CC14C88DDA0}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KicectClasse", "KicectClasse\KicectClasse.csproj", "{069E5D4E-E5DD-4163-B4D3-5CC14C88DDA0}"
 EndProject

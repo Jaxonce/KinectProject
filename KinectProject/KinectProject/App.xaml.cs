@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using KicectClasse;
 
 namespace KinectProject
 {
@@ -13,5 +14,7 @@ namespace KinectProject
     /// </summary>
     public partial class App : Application
     {
+        //public KinectManager KinectManager {get;set;}
+
     }
 }

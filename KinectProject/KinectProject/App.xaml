@@ -2,8 +2,9 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:KinectProject"
-             StartupUri="MainWindow.xaml">
+             StartupUri="MainWindow.xaml"
+             xmlns:src="clr-namespace:KicectClasse;assembly=KicectClasse">
     <Application.Resources>
-         
+        <src:StatusConverter x:Key="statusConverter"/>
     </Application.Resources>
 </Application>

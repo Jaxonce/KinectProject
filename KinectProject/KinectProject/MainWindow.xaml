@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:KinectProject"
+        xmlns:local="clr-namespace:KinectProject" xmlns:kicectclasse="clr-namespace:KicectClasse;assembly=KicectClasse" d:DataContext="{d:DesignInstance Type=kicectclasse:KinectManager}"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
@@ -15,11 +15,10 @@
         <Button Content="Infrared" HorizontalAlignment="Left" Height="37" Margin="346,75,0,0" VerticalAlignment="Top" Width="89"/>
         <Button Content="Body" HorizontalAlignment="Left" Height="37" Margin="467,75,0,0" VerticalAlignment="Top" Width="89"/>
         <Button Content="Body and color" HorizontalAlignment="Left" Height="37" Margin="584,75,0,0" VerticalAlignment="Top" Width="89"/>
-        <Ellipse Stroke="Black" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,120,0" Width="40" Height="40" Fill="LightGreen"/>
+        <Ellipse Stroke="Black" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,120,0" Width="40" Height="40" Fill="{Binding Status, Converter={StaticResource statusConverter}}"/>
         <Viewbox>
             <Image />
         </Viewbox>
-        <TextBox TextWrapping="Wrap" Text="Running" Width="120" Margin="365,30,315,386" TextChanged="TextBox_TextChanged"/>
-        
+        <TextBlock TextWrapping="Wrap" Text="{Binding StatusText}" Width="120" HorizontalAlignment="Center" Margin="100, 25,0,0" Height="30" VerticalAlignment="Top"/>
     </Grid>
 </Window>
