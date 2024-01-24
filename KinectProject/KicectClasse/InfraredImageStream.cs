@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace KicectClasse
 {
-    public partial class InfraredImageStream: KinectStream
+    public partial class InfraredImageStream: KinectViewModel
     {
         public InfraredFrameReader IrFrameReader { get; set; }
-        public InfraredImageStream(KinectManager manager): base(manager)
+        public InfraredImageStream(): base()
         {
             IrFrameReader = Manager.KinectSensor.InfraredFrameSource.OpenReader();
         }

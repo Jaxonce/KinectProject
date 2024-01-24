@@ -21,13 +21,24 @@ namespace KinectProject
     /// </summary>
     public partial class MainWindow : Window
     {
+        public KinectViewModel KinectStream;
 
         public MainWindow()
         {
-            KinectManager kinectManager = new();
-            kinectManager.StartSensor();
-            DataContext = kinectManager;
+            KinectStream = new KinectViewModel();
+            KinectStream.Manager.StartSensor();
+            DataContext = KinectStream;
             InitializeComponent();
+        }
+
+        private void Button_Click_ColorFrame(object sender, RoutedEventArgs e)
+        {
+            canva.Source = KinectStream.ColorStream.ColorBitmap;
+        }
+
+        private void Button_Click_DepthFrame(object sender, RoutedEventArgs e)
+        {
+            canva.Source = KinectStream.DepthStream.DepthBitMap;
         }
     }
 }
