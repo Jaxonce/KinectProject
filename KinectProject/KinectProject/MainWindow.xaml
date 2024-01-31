@@ -13,9 +13,14 @@
         <Button Content="Color" HorizontalAlignment="Left" Height="37" Margin="111,75,0,0" VerticalAlignment="Top" Width="89" Click="Button_Click_ColorFrame"/>
         <Button Content="Depth" HorizontalAlignment="Left" Height="37" Margin="229,75,0,0" VerticalAlignment="Top" Width="89" Click="Button_Click_DepthFrame"/>
         <Button Content="Infrared" HorizontalAlignment="Left" Height="37" Margin="346,75,0,0" VerticalAlignment="Top" Width="89"/>
-        <Button Content="Body" HorizontalAlignment="Left" Height="37" Margin="467,75,0,0" VerticalAlignment="Top" Width="89"/>
+        <Button Content="Body" HorizontalAlignment="Left" Height="37" Margin="467,75,0,0" VerticalAlignment="Top" Width="89" Click="Button_Click_BodyFrame"/>
         <Button Content="Body and color" HorizontalAlignment="Left" Height="37" Margin="584,75,0,0" VerticalAlignment="Top" Width="89"/>
         <Ellipse Stroke="Black" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,120,0" Width="40" Height="40" Fill="{Binding Manager.Status, Converter={StaticResource statusConverter}}"/>
+        <Viewbox>
+            <Canvas x:Name="canva4body">
+                
+            </Canvas>
+        </Viewbox>
         <Viewbox>
             <Image x:Name="canva"/>
         </Viewbox>

@@ -40,5 +40,12 @@ namespace KinectProject
         {
             canva.Source = KinectStream.DepthStream.DepthBitMap;
         }
+
+        private void Button_Click_BodyFrame(object sender, RoutedEventArgs e)
+        {
+            canva4body.Children.Add(KinectStream.BodyStream.DrawingCanvas);
+        }
+
+        
     }
 }

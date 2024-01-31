@@ -17,10 +17,13 @@ namespace KicectClasse
 
         public DepthImageStream DepthStream { get; private set; }
 
+        public BodyStream BodyStream { get; private set; }
+
         public KinectViewModel() {
             Manager = new KinectManager();
             ColorStream = new ColorImageStream(Manager);
             //DepthStream = new DepthImageStream(Manager);
+            BodyStream = new BodyStream(Manager);
         }
     }
 }
