@@ -25,28 +25,35 @@ namespace KicectClasse
 
         public override void TestGesture(Body body)
         {
-
+            if (isRecognitionRunning)
+            {
+                if (TestEndConditions(body)) {
+                    // evenement
+                    isRecognitionRunning = false;
+                }
+                else if ( !TestPosture(body) || !TestRunningGesture(body)){
+                    isRecognitionRunning = false;
+                }
+                else if( TestPosture(body) && TestRunningGesture(body)) { 
+                }
+                else
+                {
+                    if ( TestInitialConditions(body))
+                    {
+                        isRecognitionRunning = true;
+                    }
+                }
+            }
         }
 
-         protected bool TestInitialConditions(Body body)
-        {
-            return false;
-        }
+        protected abstract bool TestInitialConditions(Body body);
 
-        protected bool TestPosture(Body body)
-        {
-            return false;
-        }
+        protected abstract bool TestPosture(Body body);
 
-        protected bool TestRunningGesture(Body body)
-        {
-            return false;
-        }
 
-        protected bool TestEndConditions(Body body)
-        {
-            return false;
-        }
+        protected abstract bool TestRunningGesture(Body body);
+
+        protected abstract bool TestEndConditions(Body body);
 
     }
 }

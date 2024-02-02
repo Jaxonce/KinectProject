@@ -15,7 +15,7 @@ namespace MyGesturesBank
         {
         }
 
-        public static bool HandsOverHead(Body body)
+        protected override bool TestPosture(Body body)
         {
             if (body.IsTracked)
             {

@@ -8,12 +8,10 @@ using System.Windows.Ink;
 
 namespace KinectUtils
 {
-    public class GestureManager
+    public static class GestureManager
     {
-        public BaseGesture KnowGestures { get; set; }
-        KinectManager KinectManager { get; set; }
 
-        public EventHandler<GestureRecognizer> GestureReconized;
+        public static EventHandler<GestureRecognizer> GestureReconized;
 
         public static void AddGestures(params BaseGesture[] gestures)
         {

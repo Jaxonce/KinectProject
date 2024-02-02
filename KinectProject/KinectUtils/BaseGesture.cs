@@ -15,7 +15,6 @@ namespace KicectClasse
 
         public BaseGesture(EventHandler<GestureRecognizer> gestureReconized, string gestureName)
         {
-            GestureReconized = gestureReconized;
             GestureName = gestureName;
         }
 

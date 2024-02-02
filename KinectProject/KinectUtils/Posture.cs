@@ -21,10 +21,7 @@ namespace KicectClasse
             }
         }
 
-        protected bool TestPosture(Body body)
-        {
-            return false;
-        }
+        protected abstract bool TestPosture(Body body);
 
     }
 }
