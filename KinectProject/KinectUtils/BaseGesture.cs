@@ -21,7 +21,7 @@ namespace KicectClasse
         public abstract void TestGesture(Body body);
 
         protected void OnGestureReconized(Body body) {
-            GestureReconized.Invoke(this, new GestureRecognizer());
+            GestureReconized.Invoke(body, new GestureRecognizer());
         }
     }
 }

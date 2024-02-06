@@ -19,8 +19,11 @@ namespace MyGesturesBank
         {
             if(body.IsTracked)
             {
-                if(body.Joints[JointType.HandRight].Position.Y < body.Joints[JointType.ShoulderLeft].Position.Y && body.Joints[JointType.HandRight].Position.Y > body.Joints[JointType.AnkleLeft].Position.Y) {   // Verifier que la main est ouverte
-                    return true;
+                if (body.Joints[JointType.HandRight].TrackingState == TrackingState.Tracked)
+                {
+                    if(body.Joints[JointType.HandRight].Position.Y < body.Joints[JointType.ShoulderLeft].Position.Y && body.Joints[JointType.HandRight].Position.Y > body.Joints[JointType.AnkleLeft].Position.Y && body.HandRightState == HandState.Open && body.Joints[JointType.HandRight].Position.X < body.Joints[JointType.ShoulderLeft].Position.X) {  
+                        return true;
+                    }
                 }
             }
             return false;
@@ -30,9 +33,12 @@ namespace MyGesturesBank
         {
             if (body.IsTracked)
             {
-                if (body.Joints[JointType.HandRight].Position.Y < body.Joints[JointType.ShoulderRight].Position.Y && body.Joints[JointType.HandRight].Position.Y > body.Joints[JointType.AnkleRight].Position.Y)
+                if (body.Joints[JointType.HandRight].TrackingState == TrackingState.Tracked)
                 {
-                    return true;
+                    if (body.Joints[JointType.HandRight].Position.Y < body.Joints[JointType.ShoulderRight].Position.Y && body.Joints[JointType.HandRight].Position.Y > body.Joints[JointType.AnkleRight].Position.Y && body.HandRightState == HandState.Open && body.Joints[JointType.HandRight].Position.X > body.Joints[JointType.ShoulderRight].Position.X)
+                    {
+                        return true;
+                    }
                 }
             }
             return false;
@@ -40,12 +46,19 @@ namespace MyGesturesBank
 
         protected override bool TestPosture(Body body)
         {
-            throw new NotImplementedException(); // Verifie s'il est bien entre l'epaule et la hanche
+            if (body.IsTracked)
+            {
+                if (body.Joints[JointType.HandRight].Position.Y < body.Joints[JointType.ShoulderRight].Position.Y && body.Joints[JointType.HandRight].Position.Y > body.Joints[JointType.AnkleRight].Position.Y && body.HandRightState == HandState.Open && body.Joints[JointType.HandRight].Position.X < body.Joints[JointType.ShoulderRight].Position.X+0.2 && body.Joints[JointType.HandRight].Position.X > body.Joints[JointType.ShoulderLeft].Position.X-0.2)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         protected override bool TestRunningGesture(Body body)
         {
-            throw new NotImplementedException(); // Verifie si la main avance bien par rapport au frame d'avant
+            return false;
         }
     }
 }

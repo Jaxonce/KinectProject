@@ -17,7 +17,7 @@ namespace KicectClasse
         public override void TestGesture(Body body)
         {
             if (this.TestPosture(body)) {
-
+                this.OnGestureReconized(body);
             }
         }
 

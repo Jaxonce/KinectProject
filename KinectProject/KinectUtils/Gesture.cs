@@ -28,7 +28,7 @@ namespace KicectClasse
             if (isRecognitionRunning)
             {
                 if (TestEndConditions(body)) {
-                    // evenement
+                    this.OnGestureReconized(body);
                     isRecognitionRunning = false;
                 }
                 else if ( !TestPosture(body) || !TestRunningGesture(body)){
