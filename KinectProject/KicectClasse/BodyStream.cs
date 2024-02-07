@@ -32,11 +32,6 @@ namespace KicectClasse
         private const double LowConfidenceHandSize = 20;
 
         /// <summary>
-        /// Thickness of drawn joint lines
-        /// </summary>
-        private const double JointThickness = 8.0;
-
-        /// <summary>
         /// Thickness of seen bone lines
         /// </summary>
         private const double TrackedBoneThickness = 4.0;
@@ -45,6 +40,11 @@ namespace KicectClasse
         /// Thickness of inferred joint lines
         /// </summary>
         private const double InferredBoneThickness = 1.0;
+
+        /// <summary>
+        /// Thickness of drawn joint lines
+        /// </summary>
+        private const double JointThickness = 8.0;
 
         /// <summary>
         /// Thickness of clip edge rectangles
@@ -70,14 +70,6 @@ namespace KicectClasse
         /// List of colors for each body tracked
         /// </summary>
         private List<Color> BodyColors;
-
-        /// <summary>
-        /// Clipped edges rectangles
-        /// </summary>
-        private Rectangle LeftClipEdge;
-        private Rectangle RightClipEdge;
-        private Rectangle TopClipEdge;
-        private Rectangle BottomClipEdge;
 
         private int BodyCount
         {
@@ -110,7 +102,7 @@ namespace KicectClasse
 
         [ObservableProperty]
         private Canvas drawingCanvas;
-        public BodyStream(KinectManager Manager) : base(Manager)
+        public BodyStream(KinectManager Manager, Canvas Canva) : base(Manager)
         {
             this.coordinateMapper = Manager.KinectSensor.CoordinateMapper;
 
@@ -130,11 +122,6 @@ namespace KicectClasse
             // get total number of bodies from BodyFrameSource
             this.bodies = new Body[Manager.KinectSensor.BodyFrameSource.BodyCount];
 
-            // open the reader for the body frames
-            this.bodyFrameReader = Manager.KinectSensor.BodyFrameSource.OpenReader();
-
-            // wire handler for frame arrival
-            this.bodyFrameReader.FrameArrived += this.Reader_BodyFrameArrived;
 
 
             // populate body colors, one for each BodyIndex
@@ -169,14 +156,25 @@ namespace KicectClasse
             this.PopulateVisualObjects();
 
             // add canvas to DisplayGrid
-            //this.DisplayGrid.Children.Add(this.DrawingCanvas);
+           
         }
 
+        public void start(Canvas canvas)
+        {
+            // open the reader for the body frames
+            this.bodyFrameReader = KinectManager.KinectSensor.BodyFrameSource.OpenReader();
 
-        /// <summary>
-        /// INotifyPropertyChangedPropertyChanged event to allow window controls to bind to changeable data
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+            // wire handler for frame arrival
+            this.bodyFrameReader.FrameArrived += this.Reader_BodyFrameArrived;
+            canvas = this.DrawingCanvas;
+        }
+
+        public void stop()
+        {
+            this.bodyFrameReader.FrameArrived -= this.Reader_BodyFrameArrived; 
+            this.bodyFrameReader.Dispose();
+            
+        }
 
         /// <summary>
         /// Handles the body frame data arriving from the sensor
@@ -208,9 +206,6 @@ namespace KicectClasse
 
                     if (body.IsTracked)
                     {
-                        // check if this body clips an edge
-                        this.UpdateClippedEdges(body, hasTrackedBody);
-
                         this.UpdateBody(body, bodyIndex);
 
                         hasTrackedBody = true;
@@ -220,12 +215,6 @@ namespace KicectClasse
                         // collapse this body from canvas as it goes out of view
                         this.ClearBody(bodyIndex);
                     }
-                }
-
-                if (!hasTrackedBody)
-                {
-                    // clear clipped edges if no bodies are tracked
-                    this.ClearClippedEdges();
                 }
             }
         }
@@ -275,18 +264,6 @@ namespace KicectClasse
 
                 // modify the joint's visibility and location
                 this.UpdateJoint(bodyInfo.JointPoints[jointType], joints[jointType], jointPointsInDepthSpace[jointType]);
-
-                // modify hand ellipse colors based on hand states
-                // modity hand ellipse sizes based on tracking confidences
-                if (jointType == JointType.HandRight)
-                {
-                    this.UpdateHand(bodyInfo.HandRightEllipse, body.HandRightState, body.HandRightConfidence, jointPointsInDepthSpace[jointType]);
-                }
-
-                if (jointType == JointType.HandLeft)
-                {
-                    this.UpdateHand(bodyInfo.HandLeftEllipse, body.HandLeftState, body.HandLeftConfidence, jointPointsInDepthSpace[jointType]);
-                }
             }
 
             // update all bones
@@ -322,30 +299,6 @@ namespace KicectClasse
             bodyInfo.HandLeftEllipse.Visibility = Visibility.Collapsed;
 
             bodyInfo.HandRightEllipse.Visibility = Visibility.Collapsed;
-        }
-
-        /// <summary>
-        /// Updates hand state ellipses depending on tracking state and it's confidence.
-        /// </summary>
-        /// <param name="ellipse">ellipse representing handstate</param>
-        /// <param name="handState">open, closed, or lasso</param>
-        /// <param name="trackingConfidence">confidence of handstate</param>
-        /// <param name="point">location of handjoint</param>
-        private void UpdateHand(Ellipse ellipse, HandState handState, TrackingConfidence trackingConfidence, Point point)
-        {
-            ellipse.Fill = new SolidColorBrush(this.HandStateToColor(handState));
-
-            // draw handstate ellipse based on tracking confidence
-            ellipse.Width = ellipse.Height = (trackingConfidence == TrackingConfidence.Low) ? LowConfidenceHandSize : HighConfidenceHandSize;
-
-            ellipse.Visibility = Visibility.Visible;
-
-            // don't draw handstate if hand joints are not tracked
-            if (!Double.IsInfinity(point.X) && !Double.IsInfinity(point.Y))
-            {
-                Canvas.SetLeft(ellipse, point.X - ellipse.Width / 2);
-                Canvas.SetTop(ellipse, point.Y - ellipse.Width / 2);
-            }
         }
 
         /// <summary>
@@ -417,132 +370,10 @@ namespace KicectClasse
         }
 
         /// <summary>
-        /// Draws indicators to show which edges are clipping body data.
-        /// </summary>
-        /// <param name="body">body to draw clipping information for</param>
-        /// <param name="hasTrackedBody">bool to determine if another body is triggering a clipped edge</param>
-        private void UpdateClippedEdges(Body body, bool hasTrackedBody)
-        {
-            // BUG (waiting for confirmation): 
-            // Clip dectection works differently for top and right edges compared to left and bottom edges
-            // due to the current joint confidence model. This is an ST issue.
-            // Joints become inferred immediately as they touch the left/bottom edges and clip detection triggers.
-            // Joints squish on the right/top edges and clip detection doesn't trigger until more joints of 
-            // the body goes out of view (e.g all hand joints vs only handtip).
-
-            FrameEdges clippedEdges = body.ClippedEdges;
-
-            if (clippedEdges.HasFlag(FrameEdges.Left))
-            {
-                this.LeftClipEdge.Visibility = Visibility.Visible;
-            }
-            else if (!hasTrackedBody)
-            {
-                // don't clear this edge if another body is triggering clipped edge
-                this.LeftClipEdge.Visibility = Visibility.Collapsed;
-            }
-
-            if (clippedEdges.HasFlag(FrameEdges.Right))
-            {
-                this.RightClipEdge.Visibility = Visibility.Visible;
-            }
-            else if (!hasTrackedBody)
-            {
-                this.RightClipEdge.Visibility = Visibility.Collapsed;
-            }
-
-            if (clippedEdges.HasFlag(FrameEdges.Top))
-            {
-                this.TopClipEdge.Visibility = Visibility.Visible;
-            }
-            else if (!hasTrackedBody)
-            {
-                this.TopClipEdge.Visibility = Visibility.Collapsed;
-            }
-
-            if (clippedEdges.HasFlag(FrameEdges.Bottom))
-            {
-                this.BottomClipEdge.Visibility = Visibility.Visible;
-            }
-            else if (!hasTrackedBody)
-            {
-                this.BottomClipEdge.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        /// <summary>
-        /// Clear all clipped edges.
-        /// </summary>
-        private void ClearClippedEdges()
-        {
-            this.LeftClipEdge.Visibility = Visibility.Collapsed;
-
-            this.RightClipEdge.Visibility = Visibility.Collapsed;
-
-            this.TopClipEdge.Visibility = Visibility.Collapsed;
-
-            this.BottomClipEdge.Visibility = Visibility.Collapsed;
-        }
-
-        /// <summary>
-        /// Select color of hand state
-        /// </summary>
-        /// <param name="handState"></param>
-        /// <returns></returns>
-        private Color HandStateToColor(HandState handState)
-        {
-            switch (handState)
-            {
-                case HandState.Open:
-                    return Colors.Green;
-
-                case HandState.Closed:
-                    return Colors.Red;
-
-                case HandState.Lasso:
-                    return Colors.Blue;
-            }
-
-            return Colors.Transparent;
-        }
-
-        /// <summary>
         /// Instantiate new objects for joints, bone lines, and clipped edge rectangles
         /// </summary>
         private void PopulateVisualObjects()
         {
-            // create clipped edges and set to collapsed initially
-            this.LeftClipEdge = new Rectangle()
-            {
-                Fill = new SolidColorBrush(Colors.Red),
-                Width = ClipBoundsThickness,
-                Height = 100,
-                Visibility = Visibility.Collapsed
-            };
-
-            this.RightClipEdge = new Rectangle()
-            {
-                Fill = new SolidColorBrush(Colors.Red),
-                Width = ClipBoundsThickness,
-                Height = 100,
-                Visibility = Visibility.Collapsed
-            };
-
-            this.TopClipEdge = new Rectangle()
-            {
-                Fill = new SolidColorBrush(Colors.Red),
-                Width = 100,
-                Height = ClipBoundsThickness,
-                Visibility = Visibility.Collapsed
-            };
-
-            this.BottomClipEdge = new Rectangle()
-            {
-                Fill = new SolidColorBrush(Colors.Red),
-                Width = 100,
-                Height = ClipBoundsThickness,
-                Visibility = Visibility.Collapsed
-            };
 
             foreach (var bodyInfo in this.BodyInfos)
             {
@@ -563,136 +394,6 @@ namespace KicectClasse
                 }
             }
 
-            // add clipped edges rectanges to main canvas
-            this.DrawingCanvas.Children.Add(this.LeftClipEdge);
-            this.DrawingCanvas.Children.Add(this.RightClipEdge);
-            this.DrawingCanvas.Children.Add(this.TopClipEdge);
-            this.DrawingCanvas.Children.Add(this.BottomClipEdge);
-
-            // position the clipped edges
-            Canvas.SetLeft(this.LeftClipEdge, 0);
-            Canvas.SetTop(this.LeftClipEdge, 0);
-            Canvas.SetLeft(this.RightClipEdge, 300 - ClipBoundsThickness);
-            Canvas.SetTop(this.RightClipEdge, 0);
-            Canvas.SetLeft(this.TopClipEdge, 0);
-            Canvas.SetTop(this.TopClipEdge, 0);
-            Canvas.SetLeft(this.BottomClipEdge, 0);
-            Canvas.SetTop(this.BottomClipEdge, 300 - ClipBoundsThickness);
-        }
-
-        /// <summary>
-        /// BodyInfo class that contains joint ellipses, handstate ellipses, lines for bones between two joints.
-        /// </summary>
-        private class BodyInfo
-        {
-            public bool Updated { get; set; }
-
-            public Color BodyColor { get; set; }
-
-            // ellipse representing left handstate
-            public Ellipse HandLeftEllipse { get; set; }
-
-            // ellipse representing right handstate
-            public Ellipse HandRightEllipse { get; set; }
-
-            // dictionary of all joints in a body
-            public Dictionary<JointType, Ellipse> JointPoints { get; private set; }
-
-            // definition of bones
-            public TupleList<JointType, JointType> Bones { get; private set; }
-
-            // collection of bones associated with the line object
-            public Dictionary<Tuple<JointType, JointType>, Line> BoneLines { get; private set; }
-
-            public BodyInfo(Color bodyColor)
-            {
-                this.BodyColor = bodyColor;
-
-                // create hand state ellipses
-                this.HandLeftEllipse = new Ellipse()
-                {
-                    Visibility = Visibility.Collapsed
-                };
-
-                this.HandRightEllipse = new Ellipse()
-                {
-                    Visibility = Visibility.Collapsed
-                };
-
-                // a joint defined as a jointType with a point location in XY space represented by an ellipse
-                this.JointPoints = new Dictionary<JointType, Ellipse>();
-
-                // pre-populate list of joints and set to non-visible initially
-                foreach (JointType jointType in Enum.GetValues(typeof(JointType)))
-                {
-                    this.JointPoints.Add(jointType, new Ellipse()
-                    {
-                        Visibility = Visibility.Collapsed,
-                        Fill = new SolidColorBrush(BodyColor),
-                        Width = JointThickness,
-                        Height = JointThickness
-                    });
-                }
-
-                // collection of bones
-                this.BoneLines = new Dictionary<Tuple<JointType, JointType>, Line>();
-
-                // a bone defined as a line between two joints
-                this.Bones = new TupleList<JointType, JointType>
-                {
-                    // Torso
-                    { JointType.Head, JointType.Neck },
-                    { JointType.Neck, JointType.SpineShoulder },
-                    { JointType.SpineShoulder, JointType.SpineMid },
-                    { JointType.SpineMid, JointType.SpineBase },
-                    { JointType.SpineShoulder, JointType.ShoulderRight },
-                    { JointType.SpineShoulder, JointType.ShoulderLeft },
-                    { JointType.SpineBase, JointType.HipRight },
-                    { JointType.SpineBase, JointType.HipLeft },
-
-                    // Right Arm
-                    { JointType.ShoulderRight, JointType.ElbowRight },
-                    { JointType.ElbowRight, JointType.WristRight },
-                    { JointType.WristRight, JointType.HandRight },
-                    { JointType.HandRight, JointType.HandTipRight },
-                    { JointType.WristRight, JointType.ThumbRight },
-
-                    // Left Arm
-                    { JointType.ShoulderLeft, JointType.ElbowLeft },
-                    { JointType.ElbowLeft, JointType.WristLeft },
-                    { JointType.WristLeft, JointType.HandLeft },
-                    { JointType.HandLeft, JointType.HandTipLeft },
-                    { JointType.WristLeft, JointType.ThumbLeft },
-
-                    // Right Leg
-                    { JointType.HipRight, JointType.KneeRight },
-                    { JointType.KneeRight, JointType.AnkleRight },
-                    { JointType.AnkleRight, JointType.FootRight },
-                
-                    // Left Leg
-                    { JointType.HipLeft, JointType.KneeLeft },
-                    { JointType.KneeLeft, JointType.AnkleLeft },
-                    { JointType.AnkleLeft, JointType.FootLeft },
-                };
-
-                // pre-populate list of bones that are non-visible initially
-                foreach (var bone in this.Bones)
-                {
-                    this.BoneLines.Add(bone, new Line()
-                    {
-                        Stroke = new SolidColorBrush(BodyColor),
-                        Visibility = Visibility.Collapsed
-                    });
-                }
-            }
-        }
-
-        private class TupleList<T1, T2> : List<Tuple<T1, T2>>
-        {
-            public void Add(T1 item, T2 item2)
-            {
-                this.Add(new Tuple<T1, T2>(item, item2));
-            }
         }
     }
 }

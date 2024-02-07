@@ -25,7 +25,7 @@ namespace KinectProject
 
         public MainWindow()
         {
-            KinectStream = new KinectViewModel();
+            KinectStream = new KinectViewModel(canva4body);
             KinectStream.Manager.StartSensor();
             DataContext = KinectStream;
             InitializeComponent();
@@ -33,7 +33,16 @@ namespace KinectProject
 
         private void Button_Click_ColorFrame(object sender, RoutedEventArgs e)
         {
-            canva.Source = KinectStream.ColorStream.ColorBitmap;
+            if (KinectStream.ColorStream.ColorFrameReader == null)
+            {
+                KinectStream.ColorStream.start();
+                canva.Source = KinectStream.ColorStream.ColorBitmap;
+            } else
+            {
+                KinectStream.ColorStream.stop();
+                KinectStream.ColorStream.ColorFrameReader = null;
+                canva.Source = null;
+            }     
         }
 
         private void Button_Click_DepthFrame(object sender, RoutedEventArgs e)
@@ -43,7 +52,22 @@ namespace KinectProject
 
         private void Button_Click_BodyFrame(object sender, RoutedEventArgs e)
         {
-            canva4body.Children.Add(KinectStream.BodyStream.DrawingCanvas);
+            if (KinectStream.ColorStream.ColorFrameReader != null)
+            {
+                KinectStream.ColorStream.stop();
+                KinectStream.ColorStream.ColorFrameReader = null;
+                canva.Source = null;
+            }
+                KinectStream.BodyStream.start(canva4body);
+                KinectStream.BodyStream.stop();
+                KinectStream.ColorStream.ColorFrameReader = null;
+                canva.Source = null;
+
+            if (canva4body.Children.Count != 0)
+            {
+                //canva4body.Children.Add(KinectStream.BodyStream.DrawingCanvas);
+            }
+            
         }
 
         

@@ -19,10 +19,21 @@ namespace KicectClasse
         private WriteableBitmap colorBitmap;
         public ColorImageStream(KinectManager Manager):base(Manager)
         {
-            ColorFrameReader = Manager.KinectSensor.ColorFrameSource.OpenReader();
-            ColorFrameReader.FrameArrived += ColorFrameReader_FrameArrived;
             FrameDescription colorFrameDescription = Manager.KinectSensor.ColorFrameSource.CreateFrameDescription(ColorImageFormat.Bgra);
             this.ColorBitmap = new WriteableBitmap(colorFrameDescription.Width, colorFrameDescription.Height, 72, 72, PixelFormats.Bgra32, null);
+        }
+
+        public bool start()
+        {
+            ColorFrameReader = KinectManager.KinectSensor.ColorFrameSource.OpenReader();
+            ColorFrameReader.FrameArrived += ColorFrameReader_FrameArrived;
+            return true;
+        }
+
+        public void stop()
+        {
+            ColorFrameReader.FrameArrived -= ColorFrameReader_FrameArrived;
+            ColorFrameReader.Dispose(); 
         }
 
         private void ColorFrameReader_FrameArrived(object sender, ColorFrameArrivedEventArgs e)
