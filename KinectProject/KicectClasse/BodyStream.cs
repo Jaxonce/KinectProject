@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Resources;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -141,6 +142,7 @@ namespace KicectClasse
 
             // Instantiate a new Canvas
             this.DrawingCanvas = new Canvas();
+            
 
             // use the window object as the view model in this simple example
             //Manager.DataContext = this;
@@ -153,10 +155,8 @@ namespace KicectClasse
             //this.DrawingCanvas.Clip = new Rect(0.0, 0.0, 300, 300);
 
             // create visual objects for drawing joints, bone lines, and clipped edges
-            this.PopulateVisualObjects();
 
             // add canvas to DisplayGrid
-           
         }
 
         public void start(Canvas canvas)
@@ -166,7 +166,34 @@ namespace KicectClasse
 
             // wire handler for frame arrival
             this.bodyFrameReader.FrameArrived += this.Reader_BodyFrameArrived;
-            canvas = this.DrawingCanvas;
+
+
+            foreach (var bodyInfo in this.BodyInfos)
+            {
+
+                // add joint ellipses of all bodies to canvas
+                foreach (var joint in bodyInfo.JointPoints)
+                {
+                    canvas.Children.Add(joint.Value);
+                }
+
+                // add bone lines of all bodies to canvas
+                foreach (var bone in bodyInfo.Bones)
+                {
+                    canvas.Children.Add(bodyInfo.BoneLines[bone]);
+                }
+            }
+
+            //this.PopulateVisualObjects();
+            //canvas = this.DrawingCanvas;
+            //canvas.Width = 1280;
+            //canvas.Height = 1080;
+            //this.DrawingCanvas.Width = canvas.Width;
+            //for (int i = 0; i < this.DrawingCanvas.Children.Count; i++)
+            //{
+            //    canvas.Children.Add(this.DrawingCanvas.Children[i]);
+            //}
+
         }
 
         public void stop()
@@ -377,9 +404,6 @@ namespace KicectClasse
 
             foreach (var bodyInfo in this.BodyInfos)
             {
-                // add left and right hand ellipses of all bodies to canvas
-                this.DrawingCanvas.Children.Add(bodyInfo.HandLeftEllipse);
-                this.DrawingCanvas.Children.Add(bodyInfo.HandRightEllipse);
 
                 // add joint ellipses of all bodies to canvas
                 foreach (var joint in bodyInfo.JointPoints)

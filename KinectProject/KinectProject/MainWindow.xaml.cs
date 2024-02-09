@@ -52,16 +52,16 @@ namespace KinectProject
 
         private void Button_Click_BodyFrame(object sender, RoutedEventArgs e)
         {
-            if (KinectStream.ColorStream.ColorFrameReader != null)
-            {
-                KinectStream.ColorStream.stop();
-                KinectStream.ColorStream.ColorFrameReader = null;
-                canva.Source = null;
-            }
-                KinectStream.BodyStream.start(canva4body);
-                KinectStream.BodyStream.stop();
-                KinectStream.ColorStream.ColorFrameReader = null;
-                canva.Source = null;
+            //if (KinectStream.ColorStream.ColorFrameReader != null)
+            //{
+            //    KinectStream.ColorStream.stop();
+            //    KinectStream.ColorStream.ColorFrameReader = null;
+            //    canva.Source = null;
+            //}
+            KinectStream.BodyStream.start(canva4body);
+            //KinectStream.ColorStream.ColorFrameReader = null;
+            //canva.Source = null;
+            
 
             if (canva4body.Children.Count != 0)
             {

@@ -29,9 +29,10 @@ namespace KicectClasse
         public KinectViewModel(Canvas canvas)
         {
             Manager = new KinectManager();
-            ColorStream = new ColorImageStream(Manager);
+            
             //DepthStream = new DepthImageStream(Manager);
             BodyStream = new BodyStream(Manager, canvas);
+            //ColorStream = new ColorImageStream(Manager);
         }
     }
 }
