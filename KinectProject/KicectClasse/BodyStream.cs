@@ -142,21 +142,9 @@ namespace KicectClasse
 
             // Instantiate a new Canvas
             this.DrawingCanvas = new Canvas();
-            
-
-            // use the window object as the view model in this simple example
-            //Manager.DataContext = this;
-
-            // initialize the components (controls) of the window
-            //this.InitializeComponent();
 
             // set the clip rectangle to prevent rendering outside the canvas
             this.DrawingCanvas.Clip = new RectangleGeometry();
-            //this.DrawingCanvas.Clip = new Rect(0.0, 0.0, 300, 300);
-
-            // create visual objects for drawing joints, bone lines, and clipped edges
-
-            // add canvas to DisplayGrid
         }
 
         public void start(Canvas canvas)
