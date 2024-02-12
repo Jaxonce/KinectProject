@@ -41,6 +41,7 @@ namespace KinectProject
             {
                 KinectStream.ColorStream.stop();
                 KinectStream.ColorStream.ColorFrameReader = null;
+                KinectStream.BodyStream.stop(canva4body);
                 canva.Source = null;
             }     
         }
@@ -56,6 +57,7 @@ namespace KinectProject
             {
                 KinectStream.DepthStream.stop();
                 KinectStream.DepthStream.DepthFrameReader = null;
+                KinectStream.BodyStream.stop(canva4body);
                 canva.Source = null;
             }
         }
@@ -71,28 +73,22 @@ namespace KinectProject
             {
                 KinectStream.InfraredImageStream.stop();
                 KinectStream.InfraredImageStream.InfraredFrameReader = null;
+                KinectStream.BodyStream.stop(canva4body);
                 canva.Source = null;
             }
         }
 
         private void Button_Click_BodyFrame(object sender, RoutedEventArgs e)
         {
-            //if (KinectStream.ColorStream.ColorFrameReader != null)
-            //{
-            //    KinectStream.ColorStream.stop();
-            //    KinectStream.ColorStream.ColorFrameReader = null;
-            //    canva.Source = null;
-            //}
-            KinectStream.BodyStream.start(canva4body);
-            //KinectStream.ColorStream.ColorFrameReader = null;
-            //canva.Source = null;
-            
-
-            if (canva4body.Children.Count != 0)
+            if (KinectStream.BodyStream.bodyFrameReader == null)
             {
-                //canva4body.Children.Add(KinectStream.BodyStream.DrawingCanvas);
+                KinectStream.BodyStream.start(canva4body);
             }
-            
+            else
+            {   
+                KinectStream.BodyStream.stop(canva4body);
+                KinectStream.BodyStream.bodyFrameReader = null;
+            }
         }
 
         

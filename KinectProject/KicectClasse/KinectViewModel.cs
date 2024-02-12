@@ -33,6 +33,9 @@ namespace KicectClasse
         {
             Manager = new KinectManager();  
             BodyStream = new BodyStream(Manager, canvas);
+            ColorStream = new ColorImageStream(Manager);
+            DepthStream = new DepthImageStream(Manager);
+            InfraredImageStream = new InfraredImageStream(Manager);
         }
     }
 }

@@ -22,12 +22,12 @@ namespace KicectClasse
 
         private const int MapDepthToByte = 8000 / 256;
 
-        private FrameDescription depthFrameDescription = null;
+        private FrameDescription depthFrameDescription;
 
         public DepthImageStream(KinectManager Manager) : base(Manager)
         {
             this.depthFrameDescription = Manager.KinectSensor.DepthFrameSource.FrameDescription;
-            this.DepthBitMap = new WriteableBitmap(depthFrameDescription.Width, depthFrameDescription.Height, 72, 72, PixelFormats.Bgra32, null);
+            this.DepthBitMap = new WriteableBitmap(this.depthFrameDescription.Width, this.depthFrameDescription.Height, 96.0, 96.0, PixelFormats.Gray8, null);
             this.depthPixels = new byte[depthFrameDescription.Width * depthFrameDescription.Height];
         }
 

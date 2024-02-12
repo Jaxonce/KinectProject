@@ -20,7 +20,7 @@ namespace KicectClasse
     {
         private CoordinateMapper coordinateMapper = null;
 
-        private BodyFrameReader bodyFrameReader = null;
+        public BodyFrameReader bodyFrameReader = null;
 
         /// <summary>
         /// Radius of drawn hand circles
@@ -184,23 +184,13 @@ namespace KicectClasse
                 }
             }
 
-            //this.PopulateVisualObjects();
-            //canvas = this.DrawingCanvas;
-            //canvas.Width = 1280;
-            //canvas.Height = 1080;
-            //this.DrawingCanvas.Width = canvas.Width;
-            //for (int i = 0; i < this.DrawingCanvas.Children.Count; i++)
-            //{
-            //    canvas.Children.Add(this.DrawingCanvas.Children[i]);
-            //}
-
         }
 
-        public void stop()
+        public void stop(Canvas canvas)
         {
-            this.bodyFrameReader.FrameArrived -= this.Reader_BodyFrameArrived; 
+            this.bodyFrameReader.FrameArrived -= this.Reader_BodyFrameArrived;
             this.bodyFrameReader.Dispose();
-            
+            canvas.Children.Clear();
         }
 
         /// <summary>
