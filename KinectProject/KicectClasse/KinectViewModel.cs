@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
 namespace KicectClasse
@@ -19,11 +20,22 @@ namespace KicectClasse
 
         public BodyStream BodyStream { get; private set; }
 
+        public InfraredImageStream InfraredImageStream { get; private set; }
+
         public KinectViewModel() {
             Manager = new KinectManager();
             ColorStream = new ColorImageStream(Manager);
             //DepthStream = new DepthImageStream(Manager);
-            BodyStream = new BodyStream(Manager);
+            //InfraredImageStream = new InfraredImageStream(Manager);
+        }
+
+        public KinectViewModel(Canvas canvas)
+        {
+            Manager = new KinectManager();  
+            BodyStream = new BodyStream(Manager, canvas);
+            ColorStream = new ColorImageStream(Manager);
+            DepthStream = new DepthImageStream(Manager);
+            InfraredImageStream = new InfraredImageStream(Manager);
         }
     }
 }

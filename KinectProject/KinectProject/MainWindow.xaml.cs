@@ -25,7 +25,7 @@ namespace KinectProject
 
         public MainWindow()
         {
-            KinectStream = new KinectViewModel();
+            KinectStream = new KinectViewModel(canva4body);
             KinectStream.Manager.StartSensor();
             DataContext = KinectStream;
             InitializeComponent();
@@ -33,17 +33,62 @@ namespace KinectProject
 
         private void Button_Click_ColorFrame(object sender, RoutedEventArgs e)
         {
-            canva.Source = KinectStream.ColorStream.ColorBitmap;
+            if (KinectStream.ColorStream.ColorFrameReader == null)
+            {
+                KinectStream.ColorStream.start();
+                canva.Source = KinectStream.ColorStream.ColorBitmap;
+            } else
+            {
+                KinectStream.ColorStream.stop();
+                KinectStream.ColorStream.ColorFrameReader = null;
+                KinectStream.BodyStream.stop(canva4body);
+                canva.Source = null;
+            }     
         }
 
         private void Button_Click_DepthFrame(object sender, RoutedEventArgs e)
         {
-            canva.Source = KinectStream.DepthStream.DepthBitMap;
+            if (KinectStream.DepthStream.DepthFrameReader == null)
+            {
+                KinectStream.ColorStream.start();
+                canva.Source = KinectStream.DepthStream.DepthBitMap;
+            }
+            else
+            {
+                KinectStream.DepthStream.stop();
+                KinectStream.DepthStream.DepthFrameReader = null;
+                KinectStream.BodyStream.stop(canva4body);
+                canva.Source = null;
+            }
+        }
+
+        private void Button_Click_InfraredFrame(object sender, RoutedEventArgs e)
+        {
+            if (KinectStream.InfraredImageStream.InfraredFrameReader == null)
+            {
+                KinectStream.InfraredImageStream.start();
+                canva.Source = KinectStream.InfraredImageStream.InfraredBitMap;
+            }
+            else
+            {
+                KinectStream.InfraredImageStream.stop();
+                KinectStream.InfraredImageStream.InfraredFrameReader = null;
+                KinectStream.BodyStream.stop(canva4body);
+                canva.Source = null;
+            }
         }
 
         private void Button_Click_BodyFrame(object sender, RoutedEventArgs e)
         {
-            canva4body.Children.Add(KinectStream.BodyStream.DrawingCanvas);
+            if (KinectStream.BodyStream.bodyFrameReader == null)
+            {
+                KinectStream.BodyStream.start(canva4body);
+            }
+            else
+            {   
+                KinectStream.BodyStream.stop(canva4body);
+                KinectStream.BodyStream.bodyFrameReader = null;
+            }
         }
 
         
