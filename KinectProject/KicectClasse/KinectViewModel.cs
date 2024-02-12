@@ -20,19 +20,19 @@ namespace KicectClasse
 
         public BodyStream BodyStream { get; private set; }
 
+        public InfraredImageStream InfraredImageStream { get; private set; }
+
         public KinectViewModel() {
             Manager = new KinectManager();
             ColorStream = new ColorImageStream(Manager);
             //DepthStream = new DepthImageStream(Manager);
+            //InfraredImageStream = new InfraredImageStream(Manager);
         }
 
         public KinectViewModel(Canvas canvas)
         {
-            Manager = new KinectManager();
-            
-            //DepthStream = new DepthImageStream(Manager);
+            Manager = new KinectManager();  
             BodyStream = new BodyStream(Manager, canvas);
-            //ColorStream = new ColorImageStream(Manager);
         }
     }
 }

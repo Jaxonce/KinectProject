@@ -24,7 +24,7 @@
         </Grid.RowDefinitions>
         <Button Grid.Column="0" Grid.Row="1" Content="Color" Height="37" HorizontalAlignment="center" VerticalAlignment="center" Width="89" Click="Button_Click_ColorFrame"/>
         <Button Grid.Column="1" Grid.Row="1" Content="Depth" HorizontalAlignment="center" VerticalAlignment="center" Height="37" Width="89" Click="Button_Click_DepthFrame"/>
-        <Button Grid.Column="2" Grid.Row="1" Content="Infrared" Height="37" HorizontalAlignment="center" VerticalAlignment="center" Width="89"/>
+        <Button Grid.Column="2" Grid.Row="1" Content="Infrared" Height="37" HorizontalAlignment="center" VerticalAlignment="center" Width="89" Click="Button_Click_InfraredFrame"/>
         <Button Grid.Column="3" Grid.Row="1" Content="Body" Height="37" HorizontalAlignment="center" VerticalAlignment="center" Width="89" Click="Button_Click_BodyFrame"/>
         <Button Grid.Column="4" Grid.Row="1" Content="Body and color" Height="37" HorizontalAlignment="center" VerticalAlignment="center" Width="89"/>
         <Ellipse Grid.ColumnSpan="5" Stroke="Black" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,120,0" Width="40" Height="40" Fill="{Binding Manager.Status, Converter={StaticResource statusConverter}}"/>

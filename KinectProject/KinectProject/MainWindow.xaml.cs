@@ -47,7 +47,32 @@ namespace KinectProject
 
         private void Button_Click_DepthFrame(object sender, RoutedEventArgs e)
         {
-            canva.Source = KinectStream.DepthStream.DepthBitMap;
+            if (KinectStream.DepthStream.DepthFrameReader == null)
+            {
+                KinectStream.ColorStream.start();
+                canva.Source = KinectStream.DepthStream.DepthBitMap;
+            }
+            else
+            {
+                KinectStream.DepthStream.stop();
+                KinectStream.DepthStream.DepthFrameReader = null;
+                canva.Source = null;
+            }
+        }
+
+        private void Button_Click_InfraredFrame(object sender, RoutedEventArgs e)
+        {
+            if (KinectStream.InfraredImageStream.InfraredFrameReader == null)
+            {
+                KinectStream.InfraredImageStream.start();
+                canva.Source = KinectStream.InfraredImageStream.InfraredBitMap;
+            }
+            else
+            {
+                KinectStream.InfraredImageStream.stop();
+                KinectStream.InfraredImageStream.InfraredFrameReader = null;
+                canva.Source = null;
+            }
         }
 
         private void Button_Click_BodyFrame(object sender, RoutedEventArgs e)
