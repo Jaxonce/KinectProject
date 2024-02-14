@@ -12,7 +12,29 @@ namespace KinectUtils
     public static class GestureManager
     {
 
-        public static EventHandler<GestureRecognizer> GestureReconized;
+        public static event EventHandler<GestureRecognizer> GestureReconized
+        {
+            add
+            {
+                foreach (var item in KnowGesture)
+                {
+                    item.GestureReconized += Item_GestureReconized;
+                }
+            }
+
+            remove
+            {
+                foreach (var item in KnowGesture)
+                {
+                    item.GestureReconized -= Item_GestureReconized;
+                }
+            }
+        }
+
+        private static void Item_GestureReconized(object sender, GestureRecognizer e)
+        {
+
+        }
 
         private static KinectViewModel KinectViewModel { get; set; }
 
@@ -48,7 +70,8 @@ namespace KinectUtils
 
         public static void StartAcquiringFrames(KinectViewModel kinectViewModel) 
         {
-            KinectViewModel = kinectViewModel;            
+            KinectViewModel = kinectViewModel;
+            KinectViewModel.Manager.KinectSensor.BodyFrameSource.OpenReader();
         }
 
         public static void StopAcquiringFrame() { }
