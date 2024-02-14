@@ -61,7 +61,7 @@ namespace KicectClasse
         /// <summary>
         /// Array for the bodies
         /// </summary>
-        private Body[] bodies = null;
+        private Body[] bodies { get; }
 
         /// <summary>
         /// List of BodyInfo objects for each potential body

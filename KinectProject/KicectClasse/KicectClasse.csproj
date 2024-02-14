@@ -11,6 +11,7 @@
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 		<PackageReference Include="Microsoft.Kinect" Version="2.0.1410.19000" />
 	</ItemGroup>
+	
 	<ItemGroup>
 	  <Folder Include="Properties\" />
 	</ItemGroup>
