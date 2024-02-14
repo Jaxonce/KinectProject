@@ -28,13 +28,13 @@
         <Button Grid.Column="3" Grid.Row="1" Content="Body" Height="37" HorizontalAlignment="center" VerticalAlignment="center" Width="89" Click="Button_Click_BodyFrame"/>
         <Button Grid.Column="4" Grid.Row="1" Content="Body and color" Height="37" HorizontalAlignment="center" VerticalAlignment="center" Width="89"/>
         <Ellipse Grid.ColumnSpan="5" Stroke="Black" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,120,0" Width="40" Height="40" Fill="{Binding Manager.Status, Converter={StaticResource statusConverter}}"/>
-        <Viewbox Grid.Row="2" Grid.ColumnSpan="5">
-            <Grid>
-                <Canvas x:Name="canva4body" Width="1280" Height="1024">
-
-                </Canvas>
+        <Viewbox Grid.Row="2" Grid.ColumnSpan="5"  >
+            <!--<Grid>-->
+                <Canvas x:Name="canva4body" Width="1920" Height="1080" Background="Beige">
                 <Image x:Name="canva"/>
-            </Grid>
+            </Canvas>
+                <!--<Image x:Name="canva"/>
+            </Grid>-->
         </Viewbox>
         <TextBlock Grid.ColumnSpan="5" TextWrapping="Wrap" Text="{Binding Manager.StatusText}" Width="120" HorizontalAlignment="Center" Margin="100, 25,0,0" Height="30" VerticalAlignment="Top"/>
     </Grid>

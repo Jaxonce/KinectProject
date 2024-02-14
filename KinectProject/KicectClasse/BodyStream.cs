@@ -3,6 +3,7 @@ using Microsoft.Kinect;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Resources;
 using System.Runtime.CompilerServices;
@@ -114,11 +115,11 @@ namespace KicectClasse
             this.coordinateMapper = Manager.KinectSensor.CoordinateMapper;
 
             // get the depth (display) extents
-            FrameDescription frameDescription = Manager.KinectSensor.DepthFrameSource.FrameDescription;
+            //FrameDescription frameDescription = Manager.KinectSensor.DepthFrameSource.FrameDescription;
 
             // get size of joint space
-            this.JointSpaceWidth = frameDescription.Width;
-            this.JointSpaceHeight = frameDescription.Height;
+            //this.JointSpaceWidth = frameDescription.Width;
+            //this.JointSpaceHeight = frameDescription.Height;
 
             // get total number of bodies from BodyFrameSource
             this.bodies = new Body[Manager.KinectSensor.BodyFrameSource.BodyCount];
@@ -141,14 +142,18 @@ namespace KicectClasse
             this.BodyCount = Manager.KinectSensor.BodyFrameSource.BodyCount;
 
             // Instantiate a new Canvas
-            this.DrawingCanvas = new Canvas();
+           // this.DrawingCanvas = new Canvas();
 
             // set the clip rectangle to prevent rendering outside the canvas
-            this.DrawingCanvas.Clip = new RectangleGeometry();
+           // this.DrawingCanvas.Clip = new RectangleGeometry();
         }
 
         public void start(Canvas canvas)
         {
+            FrameDescription frameDescription = KinectManager.KinectSensor.DepthFrameSource.FrameDescription;
+            canvas.Width = frameDescription.Width;
+            canvas.Height = frameDescription.Height;
+
             // open the reader for the body frames
             this.bodyFrameReader = KinectManager.KinectSensor.BodyFrameSource.OpenReader();
 
@@ -270,6 +275,7 @@ namespace KicectClasse
                 // modify the joint's visibility and location
                 this.UpdateJoint(bodyInfo.JointPoints[jointType], joints[jointType], jointPointsInDepthSpace[jointType]);
             }
+            Debug.WriteLine(jointPointsInDepthSpace[JointType.HandRight].X);
 
             // update all bones
             foreach (var bone in bodyInfo.Bones)
