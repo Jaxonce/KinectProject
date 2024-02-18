@@ -18,7 +18,7 @@ namespace KicectClasse
         public static int MaxNbOffFrames;
 
         int mCurrentFrameCount;
-        public Gesture(EventHandler<GestureRecognizer> gestureReconized, string gestureName, int mCurrentFrameCount) : base(gestureReconized, gestureName)
+        public Gesture(string gestureName, int mCurrentFrameCount) : base(gestureName)
         {
             this.mCurrentFrameCount = mCurrentFrameCount;
         }
@@ -36,14 +36,15 @@ namespace KicectClasse
                 }
                 else if( TestPosture(body) && TestRunningGesture(body)) { 
                 }
-                else
+            }
+            else
+            {
+                if ( TestInitialConditions(body))
                 {
-                    if ( TestInitialConditions(body))
-                    {
-                        isRecognitionRunning = true;
-                    }
+                    isRecognitionRunning = true;
                 }
             }
+            
         }
 
         protected abstract bool TestInitialConditions(Body body);

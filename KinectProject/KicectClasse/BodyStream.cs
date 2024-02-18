@@ -275,7 +275,7 @@ namespace KicectClasse
                 // modify the joint's visibility and location
                 this.UpdateJoint(bodyInfo.JointPoints[jointType], joints[jointType], jointPointsInDepthSpace[jointType]);
             }
-            Debug.WriteLine(jointPointsInDepthSpace[JointType.HandRight].X);
+            //Debug.WriteLine(jointPointsInDepthSpace[JointType.HandRight].X);
 
             // update all bones
             foreach (var bone in bodyInfo.Bones)

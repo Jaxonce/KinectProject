@@ -16,6 +16,8 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\KicectClasse\KicectClasse.csproj" />
+	  <ProjectReference Include="..\KinectUtils\KinectUtils.csproj" />
+	  <ProjectReference Include="..\MyGesturesBank\MyGesturesBank.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

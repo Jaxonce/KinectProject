@@ -11,7 +11,7 @@ namespace MyGesturesBank
 {
     public class GestureRightSlap : Gesture
     {
-        public GestureRightSlap(EventHandler<GestureRecognizer> gestureReconized, string gestureName, int mCurrentFrameCount) : base(gestureReconized, gestureName, mCurrentFrameCount)
+        public GestureRightSlap(string gestureName, int mCurrentFrameCount) : base(gestureName, mCurrentFrameCount)
         {
         }
 

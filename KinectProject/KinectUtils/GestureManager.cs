@@ -12,39 +12,46 @@ namespace KinectUtils
     public static class GestureManager
     {
 
-        public static event EventHandler<GestureRecognizer> GestureReconized
-        {
-            add
-            {
-                foreach (var item in KnowGesture)
-                {
-                    item.GestureReconized += Item_GestureReconized;
-                }
-            }
+        public static event EventHandler<GestureRecognizer> GestureReconized;
+        //{
+        //    add
+        //    {
+        //        foreach (var item in KnowGesture)
+        //        {
+        //            item.GestureReconized += Item_GestureReconized;
+        //        }
+        //    }
 
-            remove
-            {
-                foreach (var item in KnowGesture)
-                {
-                    item.GestureReconized -= Item_GestureReconized;
-                }
-            }
-        }
+        //    remove
+        //    {
+        //        foreach (var item in KnowGesture)
+        //        {
+        //            item.GestureReconized -= Item_GestureReconized;
+        //        }
+        //    }
+        //}
 
-        private static void Item_GestureReconized(object sender, GestureRecognizer e)
-        {
-
-        }
-
-        private static KinectViewModel KinectViewModel { get; set; }
+        private static KinectManager KinectManager { get; set; }
 
         public static BaseGesture[] KnowGesture {  get; set; }
 
         private static IGestureFactory Factory { get; set; }
 
+        private static BodyFrameReader BodyFrameReader { get; set; }
+
         public static void AddGestures(params BaseGesture[] gestures)
         {
             KnowGesture = gestures;
+
+            // Souscrire à l'événement GestureReconized de chaque geste
+            foreach (var gesture in KnowGesture)
+            {
+                gesture.GestureReconized += (sender, e) =>
+                {
+                    // Propager l'événement GestureReconized de BaseGesture
+                    GestureReconized?.Invoke(sender, e);
+                };
+            }
         }
 
         public static void AddGestures(IGestureFactory factory)
@@ -68,12 +75,47 @@ namespace KinectUtils
             }
         }
 
-        public static void StartAcquiringFrames(KinectViewModel kinectViewModel) 
+        public static void StartAcquiringFrames(KinectManager kinectManager) 
         {
-            KinectViewModel = kinectViewModel;
-            KinectViewModel.Manager.KinectSensor.BodyFrameSource.OpenReader();
+            KinectManager = kinectManager;
+            BodyFrameReader = KinectManager.KinectSensor.BodyFrameSource.OpenReader();
+            BodyFrameReader.FrameArrived += BodyFrameReader_FrameArrived;
         }
 
-        public static void StopAcquiringFrame() { }
+        public static void StopAcquiringFrame() 
+        {
+            if (BodyFrameReader != null)
+            {
+                BodyFrameReader.FrameArrived -= BodyFrameReader_FrameArrived;
+                BodyFrameReader.Dispose();
+                BodyFrameReader = null;
+            }
+        }
+
+        private static void BodyFrameReader_FrameArrived(object sender, BodyFrameArrivedEventArgs e)
+        {
+
+            using (var bodyFrame = e.FrameReference.AcquireFrame())
+            {
+                if (bodyFrame == null)
+                    return;
+
+                // Traitement du cadre du corps ici
+                Body[] bodies = new Body[bodyFrame.BodyCount];
+                bodyFrame.GetAndRefreshBodyData(bodies);
+
+
+                foreach (var body in bodies)
+                {
+                    if (body.IsTracked)
+                    {
+                        foreach (var gesture in KnowGesture)
+                        {
+                            gesture.TestGesture(body);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

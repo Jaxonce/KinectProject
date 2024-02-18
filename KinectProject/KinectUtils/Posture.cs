@@ -10,7 +10,7 @@ namespace KicectClasse
 {
     public abstract class Posture : BaseGesture
     {
-        public Posture(EventHandler<GestureRecognizer> gestureReconized, string gestureName) : base(gestureReconized, gestureName)
+        public Posture(string gestureName) : base(gestureName)
         {
         }
 

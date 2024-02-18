@@ -11,7 +11,7 @@ namespace MyGesturesBank
 {
     public class PostureHandsOverHead : Posture
     {
-        public PostureHandsOverHead(EventHandler<GestureRecognizer> gestureReconized, string gestureName) : base(gestureReconized, gestureName)
+        public PostureHandsOverHead(string gestureName) : base(gestureName)
         {
         }
 

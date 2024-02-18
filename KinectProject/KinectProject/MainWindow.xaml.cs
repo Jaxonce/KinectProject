@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using KicectClasse;
+using KinectUtils;
+using MyGesturesBank;
 
 namespace KinectProject
 {
@@ -105,6 +108,11 @@ namespace KinectProject
             }
         }
 
-        
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            GestureManager.AddGestures(new PostureRightHandUp("right hand up"), new PostureHandsOverHead("Hands over head"), new GestureRightSlap("Right Slap", 5));
+            GestureManager.StartAcquiringFrames(KinectStream.Manager);
+            Debug.WriteLine(GestureManager.KnowGesture);
+        }
     }
 }

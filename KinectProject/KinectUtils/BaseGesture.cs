@@ -1,6 +1,7 @@
 ﻿using Microsoft.Kinect;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace KicectClasse
         public event EventHandler<GestureRecognizer> GestureReconized;
         public String GestureName;
 
-        public BaseGesture(EventHandler<GestureRecognizer> gestureReconized, string gestureName)
+        public BaseGesture(string gestureName)
         {
             GestureName = gestureName;
         }
@@ -22,7 +23,7 @@ namespace KicectClasse
 
         protected void OnGestureReconized(Body body) {
             //GestureReconized.Invoke(body, new GestureRecognizer());
-            Console.WriteLine(GestureName);
+            Debug.WriteLine(GestureName);
         }
     }
 }
